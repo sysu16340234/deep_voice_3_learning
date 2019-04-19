@@ -1,6 +1,6 @@
 ## deep voice 3 论文学习(基于deep voice 源码)
 
-**1.模型结构**
+**模型结构**
 
 ![deepvoice3](https://github.com/sysu16340234/deep_voice_3_learning/blob/master/deepvoice3.PNG?raw=true)
 deep voice 3的模型主要有三个组成部分,**编码器**,**解码器**和**转换器**:
@@ -11,7 +11,7 @@ deep voice 3的模型主要有三个组成部分,**编码器**,**解码器**和*
 
 **转换器**:全卷积的后处理网络,从解码器的隐状态中预测声码器参数,是非因果的;
 
-**1.1. 结构细节**
+**结构细节**
 
 **编码器**
 
