@@ -194,7 +194,7 @@ class SinusoidalEncoding(nn.Embedding):
             return pe
 
 ```
-经过位置编码后的key向量和value向量经过线性投影后进行矩阵乘法,然后经过带有dropout的softmax单调attention模块得到注意力权重,然后与经过线性投影的value值相乘得到上下文向量,然后除以value在时间维度上的平方根,再经过线性投影得到输出:
+经过位置编码后的key向量和value向量经过线性投影后进行矩阵乘法,然后经过带有dropout的softmax单调attention模块得到注意力权重,然后与经过线性投影的value值相乘得到上下文向量,然后除以value在时间维度上的平方根,再经过线性投影得到attention块的输出,最后让输出与卷积块的输出进行残差连接并乘以比例因子得到最后的attention上下文:
 ```python
 # attention
         x = self.query_projection(query)
@@ -234,3 +234,20 @@ class SinusoidalEncoding(nn.Embedding):
         return x, attn_scores
 
 ```
+最后,输出的上下文向量经过线性投影和sigmoid激活得到mel频谱和完成标志:
+```python
+        decoder_states = x.transpose(1, 2).contiguous()
+        x = self.last_conv(x)
+
+        # Back to B x T x C
+        x = x.transpose(1, 2)
+
+        # project to mel-spectorgram
+        outputs = torch.sigmoid(x)
+
+        # Done flag
+        done = torch.sigmoid(self.fc(x))
+
+```
+
+**转换器**
